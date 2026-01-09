@@ -1,0 +1,68 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+using namespace std;
+struct Order {
+    int orderId;
+    string customerName;
+    int numberOfItems;
+    float pricePerItem;
+};
+Order inputOrder() {
+    Order o;
+    cout <<endl<< "Enter Order ID: ";
+    cin >> o.orderId;
+    cout << "Enter Customer Name: ";
+    cin >> o.customerName;
+    cout << "Enter Number of Items: ";
+    cin >> o.numberOfItems;
+    cout << "Enter Price Per Item: ";
+    cin >> o.pricePerItem;
+    return o;
+}
+
+// Function to calculate total amount
+float totalAmount(Order o) {
+    return o.numberOfItems * o.pricePerItem;
+}
+
+int main() {
+    vector<Order> orders;
+    int n;
+
+    cout << "How many orders do you want to enter? ";
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        orders.push_back(inputOrder());
+    }
+    ofstream file("priority_orders.txt");
+    if (!file.is_open()) {
+        cout << "Error opening file!" << endl;
+        return 0;
+    }
+
+    for (Order o : orders) {
+        file << o.orderId << " "<< o.customerName << " "<< o.numberOfItems << " "<< o.pricePerItem << " "<< totalAmount(o) << endl;
+    }
+    file.close();
+
+    cout <<endl<< "All order information saved to file.txt"<<endl;
+
+ 
+    cout <<endl<< "Orders Read From File "<<endl;
+    ifstream readFile("priority_orders.txt"ios::APP);
+    if (!readFile.is_open()) {
+        cout << "Error reading file!" << endl;
+        return 0;
+    }
+
+    Order o;
+    float total;
+    while (readFile >> o.orderId >> o.customerName
+                     >> o.numberOfItems >> o.pricePerItem >> total) {
+        cout << "Order ID: " << o.orderId<< " | Customer: " << o.customerName<< " | Items: " << o.numberOfItems<< " | Price/Item: " << o.pricePerItem
+             << " | Total: " << total << endl;
+    }
+
+    readFile.close();
+    return 0;
